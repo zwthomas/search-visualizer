@@ -48,11 +48,12 @@ function randomPlacement(colors, color, dim) {
 async function bfs(colors, setColors, row, col, dim) {
   console.log("bfs")
   let startPosition = [row, col]
-  let q = [startPosition]
+  let q = [[startPosition]]
   let depth = 0
   while (q.length !== 0) {
     console.log(q)
-    let [checkRow, checkCol] = q.shift()
+    let path = q.shift()
+    let [checkRow, checkCol] = path[path.length - 1]
 
     if (checkRow < 0 || checkRow >= dim || checkCol < 0 || checkCol >= dim) { continue }
     let currentColor = colors[checkRow][checkCol]
@@ -60,6 +61,13 @@ async function bfs(colors, setColors, row, col, dim) {
 
     if (colors[checkRow][checkCol] === "red") {
       console.log("solution")
+      for (let i = 1; i < path.length; i++) {
+        let [row, col] = path[i]
+        let colorCopy = [... colors]
+        colorCopy[row][col] = "yellow"
+        setColors(colorCopy)
+        await sleep(50);
+      }
       return
     }
     await sleep(5);
@@ -68,10 +76,23 @@ async function bfs(colors, setColors, row, col, dim) {
     copyColors[checkRow][checkCol] = "blue"
     setColors(copyColors)
 
-    q.push([checkRow - 1, checkCol])
-    q.push([checkRow, checkCol - 1])
-    q.push([checkRow + 1, checkCol])
-    q.push([checkRow, checkCol + 1])
+
+    path.push([checkRow - 1, checkCol])
+    q.push([... path])
+    path.pop()
+
+    path.push([checkRow, checkCol - 1])
+    q.push([... path])
+    path.pop()
+
+    path.push([checkRow + 1, checkCol])
+    q.push([... path])
+    path.pop()
+
+    path.push([checkRow, checkCol + 1])
+    q.push([... path])
+    path.pop()
+
     depth++
 
   }
