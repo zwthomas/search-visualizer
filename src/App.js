@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PriorityQueue from 'js-priority-queue';
 
 import SearchHolder from './components/SearchHolder/SearchHolder';
 
@@ -19,10 +20,15 @@ function App() {
   }
 
   let [row, col] = randomPlacement(startingColors, "green", dim)
+  
   let [startRow, setStartRow] = useState(row)
   let [startCol, setStartCol] = useState(col)
 
-  randomPlacement(startingColors, "red", dim)
+  let [endrow, endcol] = randomPlacement(startingColors, "red", dim)
+  let [endRow, setEndRow] = useState(endrow)
+  let [endCol, setEndCol] = useState(endcol)
+
+
   let [colors, setColors] = useState(startingColors)
   let [mouseDown, setMouseDown] = useState(false);
 
@@ -32,7 +38,7 @@ function App() {
   return (
     <div className="App">
       <SearchHolder colors={colors} setColors={setColors} mouseDown={mouseDown} setMouseDown={setMouseDown} template={template}/>
-      <button className="start" onClick={() => bfs(colors, setColors, startRow, startCol, dim)}>Start</button>
+      <button className="start" onClick={() => astar(colors, setColors, startRow, startCol, endRow, endCol, dim)}>Start</button>
     </div>
   );
 }
@@ -40,15 +46,67 @@ function App() {
 function randomPlacement(colors, color, dim) {
   let row = Math.floor(Math.random() * dim)
   let col = Math.floor(Math.random() * dim)
+
+  console.log("Generated")
+  console.log(row + " " + col)
   
   colors[row][col] = color
   return [row, col]
 } 
 
+async function astar(colors, setColors, startRow, startCol, endRow, endCol, dim) {
+  let q = new PriorityQueue({comparator: function(a, b) {
+    console.log("Positions")
+    let position = a[a.length - 1]
+    let aRow = position[0]
+    let aCol = position[1]
+    console.log(position)
+    console.log(aRow + " " + aCol)
+    let aHeuristic = a.length + Math.hypot(endCol - aCol, endRow - aRow)
+    position = b[b.length - 1]
+    console.log(position)
+    let bRow = position[0]
+    let bCol = position[1]    
+    console.log(bRow + " " + bCol)
+
+    let bHeuristic = b.length + Math.hypot(endCol - bCol, endRow - bRow)
+
+    return bHeuristic - aHeuristic
+  }})
+
+  q.queue([[startRow - 1, startCol]])
+  q.queue([[startRow, startCol - 1]])
+  q.queue([[startRow + 1, startCol]])
+  q.queue([[startRow, startCol + 1]])
+  // let path = q.dequeue()
+  // let position = path[path.length - 1]
+  for (let i = 0; i < 3; i++) {
+    let path = q.dequeue()
+    let position = path[path.length - 1]
+    console.log(position)
+    // let copyColors = [... colors]
+    // copyColors[position[0]][position[1]] = "yellow"
+    // setColors(copyColors)
+  }
+  // let cRow = position[0] 
+  // let cCol = position[1]
+  // console.log(cRow)
+  // console.log(cCol)
+  // let colorCopy = [... colors]
+  // colorCopy[cRow][cCol] = "yellow"
+  // setColors(colorCopy)
+
+}
+
 async function bfs(colors, setColors, row, col, dim) {
   console.log("bfs")
   let startPosition = [row, col]
-  let q = [[startPosition]]
+  let q = []
+  q.push([[row - 1, col]])
+  q.push([[row, col - 1]])
+  q.push([[row + 1, col]])
+  q.push([[row, col + 1]])
+
   let depth = 0
   while (q.length !== 0) {
     console.log(q)
@@ -61,7 +119,7 @@ async function bfs(colors, setColors, row, col, dim) {
 
     if (colors[checkRow][checkCol] === "red") {
       console.log("solution")
-      for (let i = 1; i < path.length; i++) {
+      for (let i = 0; i < path.length - 1; i++) {
         let [row, col] = path[i]
         let colorCopy = [... colors]
         colorCopy[row][col] = "yellow"
