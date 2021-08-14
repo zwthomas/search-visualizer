@@ -1,0 +1,26 @@
+.header {
+    background-color: black;
+    padding-top: 15px;
+    padding-bottom: 50px;
+    padding-left: 15px;
+  }
+  .app-name {
+    margin-top: 0;
+    color: white;
+    float: left;
+  
+  }
+  .page-functions {
+    text-align: right;
+  
+  }
+  .algorithm {
+    color: white;
+    float: right;
+    padding-right: 100px;
+    padding-top: 15px;
+  }
+  
+  .start {
+    margin-left: 10px;
+  }
