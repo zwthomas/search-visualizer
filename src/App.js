@@ -19,19 +19,24 @@ function App() {
     startingColors.push(tempColors)
   }
 
-  let [row, col] = randomPlacement(startingColors, "green", dim)
+  let row = Math.floor(dim / 2)
+  let sCol = Math.floor(row / 2)
 
+  startingColors[row][sCol] = "green"
   let [startRow, setStartRow] = useState(row)
-  let [startCol, setStartCol] = useState(col)
+  let [startCol, setStartCol] = useState(sCol)
 
-  let [endrow, endcol] = randomPlacement(startingColors, "red", dim)
-  let [endRow, setEndRow] = useState(endrow)
-  let [endCol, setEndCol] = useState(endcol)
+
+  startingColors[row][dim - sCol] = "red"
+  let [endRow, setEndRow] = useState(row)
+  let [endCol, setEndCol] = useState(dim - sCol)
 
 
   let [colors, setColors] = useState(startingColors)
   let [mouseDown, setMouseDown] = useState(false);
-  let [algorithm, setAlgorithm] = useState("dfs");
+  let [algorithm, setAlgorithm] = useState("bfs");
+  let [searched, setSearched] = useState(false)
+  let [running, setRunning] = useState(false)
 
   for (let i = 0; i < dim; i++) {
     template.push(<div className="grid" />)
@@ -48,6 +53,10 @@ function App() {
         endRow={endRow}
         endCol={endCol}
         dim={dim}
+        searched={searched}
+        setSearched={setSearched}
+        running={running}
+        setRunning={setRunning}
       />
       <SearchHolder colors={colors} setColors={setColors} mouseDown={mouseDown} setMouseDown={setMouseDown} template={template} />
     </div>
@@ -62,7 +71,7 @@ function randomPlacement(colors, color, dim) {
   console.log("Generated")
   console.log(row + " " + col)
 
-  colors[row][col] = color
+  // colors[row][col] = color
   return [row, col]
 }
 

@@ -2,21 +2,26 @@ import astar from "../algorithms/Astar"
 import dfs from "../algorithms/Depth-FirstSearch"
 import bfs from "../algorithms/Breadth-FirstSearch"
 
-function search(algorithm, colors, setColors, startRow, startCol, endRow, endCol, dim) {
+async function search(algorithm, colors, setColors, startRow, startCol, endRow, endCol, dim, setSearched, setRunning) {
+    setSearched(true)
+    setRunning(true)
+
     switch(algorithm) {
         case "dfs":
-            dfs(colors, setColors, startRow, startCol, dim)
+            await dfs(colors, setColors, startRow, startCol, dim)
             break
         case "bfs":
-            bfs(colors, setColors, startRow, startCol, dim) 
+            await bfs(colors, setColors, startRow, startCol, dim) 
             break
         case "astar":
-            astar(colors, setColors, startRow, startCol, endRow, endCol, dim)
+            await astar(colors, setColors, startRow, startCol, endRow, endCol, dim)
             break
         default:
-            dfs(colors, setColors, startRow, startCol, dim)
+            await dfs(colors, setColors, startRow, startCol, dim)
 
     }
+
+    setRunning(false)
     
 
 }

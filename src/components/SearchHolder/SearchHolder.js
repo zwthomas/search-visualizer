@@ -3,17 +3,19 @@ import "./SearchHolder.css"
 
 function SearchHolder(props) {
     return (
-        <div className="search">
-            {props.template.map((element, row) => (
-                <div className="grid-row" key={"row" + row}>
-                    {props.template.map((element, col) => (
-                        <div className="grid" key={"row" + row +"col" + col} row={row} col={col} style={{"backgroundColor": props.colors[row][col]}} onMouseEnter={(e) => {handleMouseEnter(props.mouseDown, e, props.colors, props.setColors)}} onMouseDown={(e) => {props.setMouseDown(true)}} onMouseUp={(e) => {props.setMouseDown(false)}}/>
-                    ))}
-                </div>
-            
-            ))}
+        <div className="search-holder">
+            <div className="search">
+                {props.template.map((element, row) => (
+                    <div className="grid-row" key={"row" + row}>
+                        {props.template.map((element, col) => (
+                            <div className="grid" key={"row" + row +"col" + col} row={row} col={col} style={{"backgroundColor": props.colors[row][col]}} onMouseEnter={(e) => {handleMouseEnter(props.mouseDown, e, props.colors, props.setColors)}} onMouseDown={(e) => {props.setMouseDown(true)}} onMouseUp={(e) => {props.setMouseDown(false)}}/>
+                        ))}
+                    </div>
+                
+                ))}
 
-           
+            
+            </div>
         </div>
     )
 }
